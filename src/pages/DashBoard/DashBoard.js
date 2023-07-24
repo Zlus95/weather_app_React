@@ -7,15 +7,35 @@ import { CircularProgress, Box } from "@material-ui/core";
 
 export const DashBoard = () => {
   const [VALUE] = useAppStore();
+
+  const getWeather = (arrayTemperature, arrayRain) => {
+    return Object.entries(BODY_TABLE).map(([_, val]) => {
+      let temperature = arrayTemperature?.slice(val.start * 24, val.end * 24);
+      let rain = arrayRain?.slice(val.start * 24, val.end * 24);
+      return {
+        month: val.name,
+        data: `${Math.round(Math.max.apply(null, temperature))}°/${Math.round(
+          Math.min.apply(null, temperature)
+        )}°`,
+        rain: `${Math.ceil(
+          rain?.reduce((acc, val) => acc + val, 0) / 24
+        )} Дней`,
+      };
+    });
+  };
+
+  const bodyTable = getWeather(
+    VALUE.data.hourly?.temperature_2m,
+    VALUE?.data.hourly?.rain
+  );
+
   return (
     <Layout title="Обзор">
       {VALUE.loading ? (
         <BasicTable
           headTable={HEAD_TABLE}
-          bodyTable={BODY_TABLE}
-          maxTemperature={VALUE?.data.daily?.temperature_2m_max}
-          miTemperature={VALUE?.data.daily?.temperature_2m_min}
-          rain={VALUE?.data.hourly?.rain}
+          bodyTable={bodyTable}
+          data={VALUE.data.hourly?.temperature_2m && VALUE?.data.hourly?.rain}
         />
       ) : (
         <Box className="UILoader">

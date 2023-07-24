@@ -9,7 +9,7 @@ export const AppStoreProvider = ({ children }) => {
   useEffect(() => {
     setLoading(true);
     fetch(
-      "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=2022-07-01&end_date=2023-06-30&hourly=temperature_2m,rain&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FMoscow"
+      "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=2022-07-01&end_date=2023-06-30&hourly=temperature_2m,rain"
     )
       .then((res) => res.json())
       .then((json) => setData(json))
