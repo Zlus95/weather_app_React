@@ -4,19 +4,20 @@ const AppStoreContext = createContext();
 
 export const AppStoreProvider = ({ children }) => {
   const [data, setData] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     fetch(
       "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=2022-07-01&end_date=2023-06-30&hourly=temperature_2m,rain"
     )
       .then((res) => res.json())
       .then((json) => setData(json))
-      .then(() => setLoading(true))
       .catch((e) => {
         console.log(e);
-        setLoading(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -25,7 +26,7 @@ export const AppStoreProvider = ({ children }) => {
       value={[
         {
           data,
-          loading,
+          isLoading,
         },
         {},
       ]}

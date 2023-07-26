@@ -1,4 +1,4 @@
-export const getChartOptions = (max, min) => ({
+export const getChartOptions = ({ categories, max, min }) => ({
   chart: {
     type: "spline",
     backgroundColor: "#424242",
@@ -22,20 +22,7 @@ export const getChartOptions = (max, min) => ({
   xAxis: {
     lineColor: "white",
     tickColor: "white",
-    categories: [
-      "Июль",
-      "Август",
-      "Сентябрь",
-      "Октябрь",
-      "Ноябрь",
-      "Декабрь",
-      "Январь",
-      "Февраль",
-      "Март",
-      "Апрель",
-      "Май",
-      "Июнь",
-    ],
+    categories: categories,
     labels: {
       style: {
         color: "white",
@@ -76,14 +63,14 @@ export const getChartOptions = (max, min) => ({
       marker: {
         symbol: "square",
       },
-      data: [...max],
+      data: max,
     },
     {
       name: "Мин.",
       marker: {
         symbol: "diamond",
       },
-      data: [...min],
+      data: min,
     },
   ],
   credits: {

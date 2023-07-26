@@ -2,33 +2,39 @@ import React from "react";
 import Layout from "../../partials/Layout";
 import { getChartOptions } from "./chartOptions";
 import { useAppStore } from "../../AppStore";
-import { BODY_TABLE } from "../../utils/constans";
+import { months } from "../../utils/constans";
 import { CircularProgress, Box } from "@material-ui/core";
 import { Chart } from "./Chart";
 
 export const DashBoardChart = () => {
   const [VALUE] = useAppStore();
 
-  const maxTemperatureArray = Object.entries(BODY_TABLE).map(([_, val]) => {
-    let temperature = VALUE.data.hourly?.temperature_2m?.slice(
-      val.start * 24,
-      val.end * 24
-    );
-    return Math.round(Math.max.apply(null, temperature));
-  });
+  const temperatures =
+    VALUE.data.hourly?.time?.reduce((acc, val, ind) => {
+      const monthIndex = new Date(val).getMonth();
+      const monthName = months[monthIndex];
+      if (!acc[monthName]) {
+        acc[monthName] = [VALUE.data.hourly?.temperature_2m[ind]];
+        return acc;
+      }
+      acc[monthName].push(VALUE.data.hourly?.temperature_2m[ind]);
+      return acc;
+    }, {}) || {};
 
-  const minTemperatureArray = Object.entries(BODY_TABLE).map(([_, val]) => {
-    let temperature = VALUE.data.hourly?.temperature_2m?.slice(
-      val.start * 24,
-      val.end * 24
-    );
-    return Math.round(Math.min.apply(null, temperature));
-  });
+  const chartData = Object.entries(temperatures).reduce(
+    (acc, [key, value]) => {
+      acc.categories.push(key);
+      acc.max.push(Math.round(Math.max.apply(null, value)));
+      acc.min.push(Math.round(Math.min.apply(null, value)));
+      return acc;
+    },
+    { max: [], min: [], categories: [] }
+  );
+  const options = getChartOptions(chartData);
 
-  const options = getChartOptions(maxTemperatureArray, minTemperatureArray);
   return (
     <Layout title="График">
-      {VALUE.loading ? (
+      {!VALUE.isLoading ? (
         <Chart options={options} />
       ) : (
         <Box className="UILoader">

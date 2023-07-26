@@ -31,7 +31,7 @@ export const DashBoard = () => {
 
   return (
     <Layout title="Обзор">
-      {VALUE.loading ? (
+      {!VALUE.isLoading ? (
         <BasicTable
           headTable={HEAD_TABLE}
           bodyTable={bodyTable}
